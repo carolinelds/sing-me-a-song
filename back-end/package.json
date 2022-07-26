@@ -5,8 +5,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts"
+    "build": "tsc",
+    "start": "ts-node src/server.js",
+    "dev": "nodemon src/server.ts",
+    "test": "dotenv -e .env.tests prisma migrate dev && prisma db seed && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.tests jest -i"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -29,6 +35,7 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.3.0",
     "@prisma/client": "^3.13.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
