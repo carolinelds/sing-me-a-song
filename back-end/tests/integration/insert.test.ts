@@ -1,7 +1,7 @@
-import app from "../src/app.js";
+import app from "../../src/app.js";
 import supertest from "supertest";
-import prisma from "../src/database.js";
-import { createNewRecommendation, giveRegisteredSongName } from "./factories/recommendationsFactory.js";
+import prisma from "../../src/database.js";
+import { createNewRecommendation, giveRegisteredSongName } from "../factories/recommendationsFactory.js";
 
 const agent = supertest(app);
 
