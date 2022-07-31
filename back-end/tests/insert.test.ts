@@ -10,18 +10,33 @@ beforeEach(async () => {
 });
 
 describe("POST /recommendations/", () => {
-    it("given valid recommendation data it should return 201", async () => {
+    it("given valid recommendation data it should insert new recommendation and return 201", async () => {
+        const recsBefore = await prisma.recommendation.findMany();
+
         const body = createNewRecommendation();
 
         const result = await agent.post("/recommendations/").send(body);
         const status = result.status;
 
+        const recsAfter = await prisma.recommendation.findMany();
+
         expect(status).toEqual(201);
+        expect(recsAfter.length).toBeGreaterThan(recsBefore.length);
     });
 
     it("given invalid song name and valid youtube url it should return 422", async () => {
         const body = createNewRecommendation();
         body.name = "";
+
+        const result = await agent.post("/recommendations/").send(body);
+        const status = result.status;
+
+        expect(status).toEqual(422);
+    });
+
+    it("given valid song name and invalid youtube url it should return 422", async () => {
+        const body = createNewRecommendation();
+        body.youtubeLink = "";
 
         const result = await agent.post("/recommendations/").send(body);
         const status = result.status;
