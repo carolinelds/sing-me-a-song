@@ -10,10 +10,10 @@ beforeEach(async () => {
 });
 
 describe("POST /recommendations/", () => {
-    it("given valid recommendation data it should insert new recommendation and return 201", async () => {
+    it("given valid recommendation data it should insert new recommendation and return status 201", async () => {
         const recsBefore = await prisma.recommendation.findMany();
 
-        const body = createNewRecommendation();
+        const body = await createNewRecommendation();
 
         const result = await agent.post("/recommendations/").send(body);
         const status = result.status;
@@ -24,8 +24,8 @@ describe("POST /recommendations/", () => {
         expect(recsAfter.length).toBeGreaterThan(recsBefore.length);
     });
 
-    it("given invalid song name and valid youtube url it should return 422", async () => {
-        const body = createNewRecommendation();
+    it("given invalid song name and valid youtube url it should return status 422", async () => {
+        const body = await createNewRecommendation();
         body.name = "";
 
         const result = await agent.post("/recommendations/").send(body);
@@ -34,8 +34,8 @@ describe("POST /recommendations/", () => {
         expect(status).toEqual(422);
     });
 
-    it("given valid song name and invalid youtube url it should return 422", async () => {
-        const body = createNewRecommendation();
+    it("given valid song name and invalid youtube url it should return status 422", async () => {
+        const body = await createNewRecommendation();
         body.youtubeLink = "";
 
         const result = await agent.post("/recommendations/").send(body);
@@ -44,10 +44,10 @@ describe("POST /recommendations/", () => {
         expect(status).toEqual(422);
     });
 
-    it("given a registered song name and valid youtube url it should return 409", async () => {
+    it("given a registered song name and valid youtube url it should return status 409", async () => {
         const registeredName = await giveRegisteredSongName();
 
-        const body = createNewRecommendation();
+        const body = await createNewRecommendation();
         body.name = registeredName;
         
         const result = await agent.post("/recommendations/").send(body);

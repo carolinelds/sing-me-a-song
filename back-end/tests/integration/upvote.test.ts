@@ -10,7 +10,7 @@ beforeEach(async () => {
 });
 
 describe("POST /recommendations/:id/upvote", () => {
-    it("given a valid id it should upvote and return 200", async () => {
+    it("given a valid id it should upvote and return status 200", async () => {
         const recommendation = await insertNewRecommendation();
         const votesBefore = recommendation.score;
 
@@ -24,7 +24,7 @@ describe("POST /recommendations/:id/upvote", () => {
         expect(votesAfter).toEqual(votesBefore + 1);
     });
 
-    it("given an invalid id it should return 404", async () => {
+    it("given an invalid id it should return status 404", async () => {
         const id = -1;
         
         const result = await agent.post(`/recommendations/${id}/upvote`);
