@@ -1,13 +1,12 @@
 import app from "../src/app.js";
 import supertest from "supertest";
 import prisma from "../src/database.js";
-import { faker } from "@faker-js/faker";
 import { createNewRecommendation, giveRegisteredSongName } from "./factories/recommendationsFactory.js";
 
 const agent = supertest(app);
 
 beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE recommendations`;
+    await prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`;
 });
 
 describe("POST /recommendations/", () => {

@@ -14,6 +14,14 @@ export function createNewRecommendation(){
     return newRecommendation;
 };
 
+export async function insertNewRecommendation(){
+    const newRec = createNewRecommendation();
+    const created = await prisma.recommendation.create({
+        data: newRec
+    });
+    return created;
+};
+
 export async function giveRegisteredSongName(){
     const originalRec = createNewRecommendation();
     const name = originalRec.name;
@@ -22,4 +30,14 @@ export async function giveRegisteredSongName(){
     });
 
     return name;
+};
+
+export async function getRecommendationById(id: number){
+    const recommendation = await prisma.recommendation.findUnique({
+        where: {
+            id
+        }
+    });
+    
+    return recommendation;
 };
