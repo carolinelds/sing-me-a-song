@@ -21,7 +21,7 @@ describe("POST /recommendations/top/:amount", () => {
         const result = await agent.get(`/recommendations/top/${amount}`);
         const recommendations : Recommendation[] = result.body;
 
-        const randomIndex = Math.floor(Math.random()*(amount-1)+1);
+        const randomIndex = Math.floor(Math.random()*(amount-2));
 
         expect(recommendations[randomIndex].score).toBeGreaterThanOrEqual(recommendations[randomIndex + 1].score);
         expect(recommendations.length).toEqual(amount);
@@ -37,7 +37,7 @@ describe("POST /recommendations/top/:amount", () => {
         const result = await agent.get(`/recommendations/top/${amount}`);
         const recommendations : Recommendation[] = result.body;
 
-        const randomIndex = Math.floor(Math.random()*(n-1)+1);
+        const randomIndex = Math.floor(Math.random()*(n-2));
 
         expect(recommendations[randomIndex].score).toBeGreaterThanOrEqual(recommendations[randomIndex + 1].score);
         expect(recommendations.length).toEqual(n);
