@@ -5,24 +5,31 @@ Project made while on Driven Education's Fullstack Web Development Program. The 
 
 ## Running Tests
 
-To run tests, run the following command
+To run unit and integration tests, run the following command inside back-end folder:
 
 ```bash
   npm run test
 ```
 
-If instead you want to run only integration tests, run the following command
+If instead you want to run only integration tests, run the following command:
 
 ```bash
     npm run test:integration
 ```
 
-And if you want to run only unit tests, run the following command
+And if you want to run only unit tests, run the following command:
 
 ```bash
     npm run test:unit
 ```
 
+If you want to run e2c tests on cypress, run the following command inside front-end folder:
+
+```bash
+    npx cypress open
+```
+
+Then select the appropriate broswer and spec suite to test.
 
 ## Environment Variables
 
