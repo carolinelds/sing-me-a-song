@@ -40,6 +40,36 @@ describe("recommendations services unit test suite", () => {
                 type: "conflict"
             });
         });
+
+    it(`given a valid id
+        when UPVOTE function is called
+        then it should find the corresponding recommendation and increment its score`,
+        async () => {
+
+            jest.spyOn(recommendationRepository, "find").mockImplementation((): any => []);
+            jest.spyOn(recommendationRepository, "updateScore").mockImplementation((): any => []);
+
+            const recommendation = await insertNewRecommendation();
+
+            await recommendationService.upvote(recommendation.id);
+
+            expect(recommendationRepository.find).toBeCalled();
+            expect(recommendationRepository.updateScore).toBeCalled();
+        });
+
+    it(`given an invalid id
+        when UPVOTE function is called
+        then it should throw a not found error`,
+        async () => {
+            const id = -1;
+
+            const promise = recommendationService.upvote(id);
+
+            expect(promise).rejects.toEqual({
+                type: "not_found",
+                message: ""
+            });
+        });
 });
 
 afterAll(async () => {
