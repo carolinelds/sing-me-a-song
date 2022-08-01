@@ -177,11 +177,49 @@ describe("recommendations services unit test suite", () => {
         const n = 10;
         await insertNewRecommendations(n);
 
-        const amount = n*2;
+        const amount = n * 2;
         await recommendationService.getTop(amount);
 
         expect(recommendationRepository.getAmountByScore).toBeCalled();
     });
+
+    it(`given that there are one or more recommendations registered
+        when GETRANDOM function is called
+        then it should return a random recommendation`,
+        async () => {
+            jest.spyOn(Math, "random").mockImplementationOnce(() =>  0.1 );
+            jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => recommendations);
+            jest.spyOn(Math, "floor").mockImplementationOnce((): any => 0 );
+
+            let recommendation = await createNewRecommendation();
+            
+            const recommendations = [
+                {...recommendation, id: 1, name: 'a', score: 15}, 
+                {...recommendation, id: 2, name: 'b', score: -1}, 
+                {...recommendation, id: 3, name: 'c', score: -1}
+            ];
+
+            const result = await recommendationService.getRandom();
+
+            expect(Math.random).toBeCalled();
+            expect(recommendationRepository.findAll).toBeCalled();
+            expect(Math.floor).toBeCalled();
+        });
+
+    it(`given that there are no recommendations registered yet
+        when GETRANDOM function is called
+        then it should return a not found error`,
+        async () => {
+            jest.spyOn(Math, "random").mockImplementation(() => { return 0.8 });
+            jest.spyOn(recommendationRepository, "findAll").mockImplementation((): any => []);
+
+            const promise = recommendationService.getRandom();
+
+            expect(promise).rejects.toEqual({
+                type: "not_found",
+                message: ""
+            });
+        });
 
 });
 
