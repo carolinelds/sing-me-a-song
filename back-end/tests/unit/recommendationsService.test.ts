@@ -2,7 +2,7 @@ import prisma from "../../src/database.js";
 import { jest } from "@jest/globals";
 import { recommendationService } from "./../../src/services/recommendationsService.js";
 import { recommendationRepository } from "./../../src/repositories/recommendationRepository.js";
-import { createNewRecommendation, getRecommendationById, giveRegisteredSongName, insertNewRecommendation } from "./../factories/recommendationsFactory.js";
+import { createNewRecommendation, giveRegisteredSongName, insertNewRecommendation, insertNewRecommendations } from "./../factories/recommendationsFactory.js";
 
 beforeEach(async () => {
     await prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`;
@@ -115,7 +115,43 @@ describe("recommendations services unit test suite", () => {
             expect(promise).rejects.toEqual({
                 type: "not_found",
                 message: ""
+            });
+        });
 
+    it(`when GET function is called
+        then it should return recommendations through findAll function from repository`,
+        async () => {
+            jest.spyOn(recommendationRepository, "findAll").mockImplementation((): any => []);
+
+            await recommendationService.get();
+
+            expect(recommendationRepository.findAll).toBeCalled();
+        });
+
+    it(`given a valid id
+        when GETBYIDORFAIL function is called
+        then it should return the corresponding recommendation`,
+        async () => {
+            jest.spyOn(recommendationRepository, "find").mockImplementation((): any => []);
+
+            const recommendation = await insertNewRecommendation();
+
+            await recommendationService.getById(recommendation.id);
+
+            expect(recommendationRepository.find).toBeCalled();
+        });
+
+    it(`given an invalid id
+        when GETBYIDORFAIL function is called
+        then it should throw a not found error`,
+        async () => {
+            const id = -1;
+
+            const promise = recommendationService.downvote(id);
+
+            expect(promise).rejects.toEqual({
+                type: "not_found",
+                message: ""
             });
         });
 });
