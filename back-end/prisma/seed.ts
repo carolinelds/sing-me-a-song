@@ -2,6 +2,9 @@ import prisma from "./../src/database.js";
 import { faker } from "@faker-js/faker";
 
 async function main(){
+
+    await prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`;
+
     const name = faker.music.songName();
     const youtubeLink = `https://www.youtube.com/${faker.random.alphaNumeric()}`;
 
