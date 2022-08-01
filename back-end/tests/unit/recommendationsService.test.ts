@@ -154,6 +154,35 @@ describe("recommendations services unit test suite", () => {
                 message: ""
             });
         });
+
+    it(`given a valid amount and that more than 'amount' recommendations are registered
+        when GETTOP function is called
+        then it should return the first 'amount' of recommendations ordered by scores`, async () => {
+        jest.spyOn(recommendationRepository, "getAmountByScore").mockImplementation((): any => []);
+
+        const n = 10;
+        await insertNewRecommendations(n);
+
+        const amount = n / 2;
+        await recommendationService.getTop(amount);
+
+        expect(recommendationRepository.getAmountByScore).toBeCalled();
+    });
+
+    it(`given a valid amount and that less than 'amount' recommendations are registered
+        when GETTOP function is called
+        then it should return all the recommendations ordered by scores`, async () => {
+        jest.spyOn(recommendationRepository, "getAmountByScore").mockImplementation((): any => []);
+
+        const n = 10;
+        await insertNewRecommendations(n);
+
+        const amount = n*2;
+        await recommendationService.getTop(amount);
+
+        expect(recommendationRepository.getAmountByScore).toBeCalled();
+    });
+
 });
 
 afterAll(async () => {
