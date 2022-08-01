@@ -45,7 +45,6 @@ describe("recommendations services unit test suite", () => {
         when UPVOTE function is called
         then it should find the corresponding recommendation and increment its score`,
         async () => {
-
             jest.spyOn(recommendationRepository, "find").mockImplementation((): any => []);
             jest.spyOn(recommendationRepository, "updateScore").mockImplementation((): any => []);
 
@@ -68,6 +67,55 @@ describe("recommendations services unit test suite", () => {
             expect(promise).rejects.toEqual({
                 type: "not_found",
                 message: ""
+            });
+        });
+
+    it(`given a valid id from a recommendation whose score is greater than -5
+        when DOWNVOTE function is called 
+        then it should get the corresponding recommendation and decrement its score`,
+        async () => {
+            jest.spyOn(recommendationRepository, "find").mockImplementation((): any => []);
+            jest.spyOn(recommendationRepository, "updateScore").mockImplementation((): any => []);
+
+            const recommendation = await insertNewRecommendation();
+
+            await recommendationService.downvote(recommendation.id);
+
+            expect(recommendationRepository.find).toBeCalled();
+            expect(recommendationRepository.updateScore).toBeCalled();
+        });
+
+    it(`given a valid id from a recommendation whose score equals to -5
+        when DOWNVOTE function is called 
+        then it should get the corresponding recommendation and decrement its score and remove this recommendation`,
+        async () => {
+            jest.spyOn(recommendationRepository, "find").mockImplementation((): any => recommendation);
+            jest.spyOn(recommendationRepository, "updateScore").mockImplementation((): any => { return { ...recommendation, score: -6 } });
+            jest.spyOn(recommendationRepository, "remove").mockImplementation((): any => { });
+
+            const create = await createNewRecommendation();
+            const recommendation = { ...create, id: 1, score: -5 };
+
+            await recommendationService.downvote(recommendation.id);
+
+            expect(recommendationRepository.find).toBeCalled();
+            expect(recommendationRepository.updateScore).toBeCalled();
+            expect(recommendationRepository.remove).toBeCalled();
+        });
+
+
+    it(`given an invalid id
+    when DOWNVOTE function is called 
+    then it should throw a not found error`,
+        async () => {
+            const id = -1;
+
+            const promise = recommendationService.downvote(id);
+
+            expect(promise).rejects.toEqual({
+                type: "not_found",
+                message: ""
+
             });
         });
 });
